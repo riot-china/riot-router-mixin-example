@@ -1,0 +1,24 @@
+<todo-new if="{!hidden}">
+    <h3>ADD TODO</h3>
+    <input type="text" name="todoName"/>
+    <input class="btn" type="button" onclick="{onSubmit}" value="submit"/>
+    <script>
+        var me = this;
+        var id = 4;
+        me.mixin('viewify');
+        me.on('open', function(){
+            me.todoName.value = "";
+            me.trigger('ready');
+        })
+        me.onSubmit = function(){
+            if(me.todoName.value.trim() === ''){
+                return;
+            }
+            me.parent.tags['todo-list'].todos.push({
+                id: id++,
+                name: me.todoName.value.trim()
+            })
+            riot.route('//todo/list');
+        }
+    </script>
+</todo-new>

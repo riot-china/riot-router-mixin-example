@@ -1,0 +1,29 @@
+require('./todo-list.html');
+require('./todo-new.html');
+require('./todo-more.html');
+
+<app>
+    <a href="#/todo/list">todo list</a>
+    <a href="#/todo/new">add todo</a>
+    <todo-list></todo-list>
+    <todo-new></todo-new>
+    <todo-more></todo-more>
+    <script>
+        this.mixin('router');
+        this.routeConfig([
+            {
+                path: '/todo/list',
+                name: 'todo-list',
+                defaultRoute: true
+            },
+            {
+                path: '/todo/new',
+                name: 'todo-new'
+            },
+            {
+                path: '/todo/more/_:id',
+                name: 'todo-more'
+            }
+        ])
+    </script>
+</app>

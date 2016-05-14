@@ -1,0 +1,31 @@
+<todo-more if="{!hidden}">
+    <h3>TODO INFO</h3>
+    <h4>
+        <label>NAME: </label>
+        <br/>
+        <strong>{name}</strong>
+    </h4>
+    <hr/>
+    <h4>
+        <label>ID: </label>
+        <br/>
+        <strong>{id}</strong>
+    </h4>
+    <hr/>
+    <p>
+        <label>DESCRIBE: </label>
+        <br/>
+        balabalabala...
+    </p>
+    <script>
+        var me = this;
+        me.mixin('viewify');
+        me.mixin('router');
+        me.on('open', function(ctx){
+            console.log('routed to todo detail');
+            me.id = ctx.request.params.id;
+            me.name = ctx.request.query.name;
+            me.trigger('ready');
+        })
+    </script>
+</todo-more>

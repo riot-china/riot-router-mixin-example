@@ -1,0 +1,54 @@
+require('./todo-detail.html');
+
+<todo-list if="{!hidden}">
+    <h3>TODO LIST</h3>
+    <ul>
+        <li each="{todo, i in todos}" class="{active: i===parent.activeTodo}"><a href="#/todo/list/_{todo.id}?name={todo.name}" onclick="{parent.onClick(i)}">{todo.id} | {todo.name}</a></li>
+    </ul>
+    <todo-detail></todo-detail>
+    <style>
+        .active{
+            color: red;
+        }
+    </style>
+    <script>
+        var me = this;
+        me.mixin('router');
+        me.mixin('viewify');
+        me.todos = [
+            {
+                id: '1',
+                name: 'todo1'
+            },
+            {
+                id: '2',
+                name: 'todo2'
+            },
+            {
+                id: '3',
+                name: 'todo3'
+            }
+        ];
+        me.routeConfig([
+            {
+                path: '/_:id',
+                name: 'todo-detail',
+                before: function(done, request){
+                    me.activeTodo = parseInt(request.params.id)-1;
+                    me.update();
+                    done();
+                }
+            }
+        ])
+        me.onClick = function(i){
+            return function(){
+                me.activeTodo = i;
+                return true;
+            }
+        }
+        me.on('open', function(ctx){
+            console.log('routed to todo list');
+            me.trigger('ready');
+        })
+    </script>
+</todo-list>

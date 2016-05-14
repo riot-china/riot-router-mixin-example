@@ -1,0 +1,29 @@
+<todo-detail if="{!hidden}">
+    <div>
+        <h4>TODO DETAIL</h4>
+        <div>todo id: {id}</div>
+        <div>todo decs: {name}</div>
+        <a href="#/todo/more/_{id}?name={name}" class="btn">more</a>
+    </div>
+    <style>
+        .btn{
+            display: block;
+            width: 48px;
+            height: 24px;
+            line-height: 24px;
+            background: orange;
+            text-align: center;
+            border: none;
+        }
+    </style>
+    <script>
+        var me = this;
+        me.mixin('viewify');
+        me.on('open', function(ctx){
+            console.log('routed to todo detail');
+            me.id = ctx.request.params.id;
+            me.name = ctx.request.query.name;
+            me.trigger('ready');
+        })
+    </script>
+</todo-detail>
