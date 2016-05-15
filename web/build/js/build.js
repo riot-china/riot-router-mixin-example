@@ -2493,6 +2493,8 @@ webpackJsonp([0,1],[
 
 	hub.routesMap = {};
 
+	hub.entry = null;
+
 	hub.defaultRoute = null;
 
 	hub.init = function () {
@@ -2555,6 +2557,10 @@ webpackJsonp([0,1],[
 	    }
 	};
 
+	hub.composeEntry = function (tag) {
+	    !hub.entry && (hub.entry = tag);
+	};
+
 	hub.registerRoute = function (_ref, container) {
 	    var path = _ref.path;
 	    var name = _ref.name;
@@ -2587,7 +2593,6 @@ webpackJsonp([0,1],[
 	            var route = _me$_getMetaDataFromR.route;
 	            var params = _me$_getMetaDataFromR.params;
 
-
 	            if (!route) {
 	                return recursiveHints(hints.slice(1));
 	            }
@@ -2608,15 +2613,21 @@ webpackJsonp([0,1],[
 	            }
 	            done();
 	            function done() {
-	                if (tag.hasOwnProperty('hidden')) {
-	                    tag.one('ready', function () {
-	                        hub._routeTo(tag);
-	                        recursiveHints(hints.slice(1));
-	                    });
-	                    tag.trigger('open', ctx);
-	                    return;
+	                if (hub.entry.middlewares.length) {
+	                    return hub._execMiddleware(hub.entry.middlewares, { path: path, request: request }, next);
 	                }
-	                recursiveHints(hints.slice(1));
+	                next();
+	                function next() {
+	                    if (tag.hasOwnProperty('hidden')) {
+	                        tag.one('ready', function () {
+	                            hub._routeTo(tag);
+	                            recursiveHints(hints.slice(1));
+	                        });
+	                        tag.trigger('open', ctx);
+	                        return;
+	                    }
+	                    recursiveHints(hints.slice(1));
+	                }
 	            }
 	        }
 	        recursiveHints(req.hints);
@@ -2640,6 +2651,18 @@ webpackJsonp([0,1],[
 	            }
 	        }
 	    };
+	};
+
+	hub._execMiddleware = function (middlewares, param, done) {
+	    function recursiveExec(middlewares) {
+	        if (!middlewares.length) {
+	            return done();
+	        }
+	        middlewares[0].apply(param, [function () {
+	            return recursiveExec(middlewares.slice(1));
+	        }]);
+	    }
+	    recursiveExec(middlewares);
 	};
 
 	hub._routeTo = function (tag) {
@@ -2705,6 +2728,8 @@ webpackJsonp([0,1],[
 
 	    prefixPath: '',
 
+	    middlewares: [],
+
 	    routesMap: null,
 
 	    _registerRoute: function _registerRoute(_ref2, container) {
@@ -2725,6 +2750,10 @@ webpackJsonp([0,1],[
 	        return this;
 	    },
 
+	    use: function use(fn) {
+	        this.middlewares.push(fn);
+	    },
+
 	    prefix: function prefix(_prefix) {
 	        this.prefixPath = _prefix;
 	        return this;
@@ -2733,6 +2762,9 @@ webpackJsonp([0,1],[
 	    routeConfig: function routeConfig(routes) {
 	        var _this2 = this;
 
+	        if (!this.parent) {
+	            hub.composeEntry(this);
+	        }
 	        if (!this.prefixPath && this.parent && this.parent.routesMap) {
 	            this.prefixPath = (this.parent.prefixPath || '') + getPrefix(this);
 	        }
@@ -2781,6 +2813,15 @@ webpackJsonp([0,1],[
 
 	riot.tag2('app', '<a href="#/todo/list">todo list</a> <a href="#/todo/new">add todo</a> <todo-list></todo-list> <todo-new></todo-new> <todo-more></todo-more>', '', '', function(opts) {
 	        this.mixin('router');
+	        this.use(function(next){
+	            console.log('middleware1...')
+	            console.log(this);
+	            next();
+	        });
+	        this.use(function(next){
+	            console.log('middleware2...')
+	            next();
+	        });
 	        this.routeConfig([
 	            {
 	                path: '/todo/list',
@@ -2795,7 +2836,7 @@ webpackJsonp([0,1],[
 	                path: '/todo/more/_:id',
 	                name: 'todo-more'
 	            }
-	        ])
+	        ]);
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 

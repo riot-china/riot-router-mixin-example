@@ -10,6 +10,15 @@ require('./todo-more.html');
     <todo-more></todo-more>
     <script>
         this.mixin('router');
+        this.use(function(next){
+            console.log('middleware1...')
+            console.log(this);
+            next();
+        });
+        this.use(function(next){
+            console.log('middleware2...')
+            next();
+        });
         this.routeConfig([
             {
                 path: '/todo/list',
@@ -24,6 +33,6 @@ require('./todo-more.html');
                 path: '/todo/more/_:id',
                 name: 'todo-more'
             }
-        ])
+        ]);
     </script>
 </app>
