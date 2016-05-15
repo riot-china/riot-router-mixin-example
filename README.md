@@ -5,7 +5,7 @@ a to-do list example
 ###How to run
 
 ---
-
-  npm install
-  
-  node index.js
+```js
+riot-router-mixin-example-path$ npm install
+riot-router-mixin-example-path$ node index.js
+```
