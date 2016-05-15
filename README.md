@@ -9,3 +9,5 @@ a to-do list example
 riot-router-mixin-example-path$ npm install
 riot-router-mixin-example-path$ node index.js
 ```
+then open brower
+url: localhost:3000
