@@ -25,7 +25,6 @@ hub._parseRoute = function(){
         let [uri, queryString] = path.split('?');
         let uriParts = uri.split('/');
 
-        req.params = {};
         req.paramList = [];
         if(uri.match(/_(\w+)/g)){
             req.paramList = uriParts.filter(p => p.match(/_(\w+)/g)).map(o => o.slice(1));

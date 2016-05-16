@@ -8,7 +8,7 @@ var path = require('path');
 app.use(views(path.join(__dirname, '../views'), { map: { html: 'swig' }}));
 
 app.on('error', function(err){
-    logger.error(err);
+    console.error(err);
 });
 
 
